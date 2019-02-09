@@ -1,4 +1,5 @@
 # Chapter 4
+[back to index](index.md)
 
 ## Data types
 The type constructor is the name of the type, capitalized. It is used at the type level (type signatures).

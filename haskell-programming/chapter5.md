@@ -1,4 +1,5 @@
 # Chapter 5
+[back to index](index.md)
 
 ## Type Signatures
 A type signature might have multiple typeclass constraints:

@@ -1,4 +1,5 @@
 # Chapter 7
+[back to index](index.md)
 
 ## Newtype
 `newtype` is a special type of data declaration in that in permits only one constructor and only one field.

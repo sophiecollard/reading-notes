@@ -1,4 +1,5 @@
 # Chapter 6
+[back to index](index.md)
 
 ## Typeclass Derivation
 Typeclasses which can automatically be derived are `Eq`, `Ord`, `Enum`, `Bounded`, `Read` and `Show`, though there are some constraints on doing that.
