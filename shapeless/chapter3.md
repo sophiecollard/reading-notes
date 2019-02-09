@@ -2,7 +2,7 @@
 [back to index](index.md)
 
 ## Type classes recap
- A type class is a parameterised trait representing some sort of general functionality that we would like to apply to a wide range of types. We implement instances of our type classes for each concrete type we care about. For instance:
+A type class is a parameterised trait representing some sort of general functionality that we would like to apply to a wide range of types. We implement instances of our type classes for each concrete type we care about. For instance:
 
 ```scala
 // type class
@@ -130,7 +130,8 @@ This can be achieved with:
 ```scala
 implicit def genericCsvEncoder[A, R](
   implicit
-  gen: Generic[A] { type Repr = R }, // trick to solve scoping issue
+  //gen: Generic[A] { type Repr = R }, // trick to solve scoping issue
+  gen: Generic.Aux[A, R], // see "Aux type aliases" section below
   csvEncoder: CsvEncoder[R]
 ): CsvEncoder[A] = CsvEncoder.instance { a =>
   csvEncoder.encode(gen.to(a))
@@ -156,10 +157,18 @@ iceCreamCsvEncoder.encode(iceCream)
 ```
 
 ### Aux type aliases
-_
+Type refinements like `Generic[A] { type Repr = R }` are verbose and difficult to read, so shapeless provides a type alias `Generic.Aux` to rephrase the type member as a type parameter:
 
-### Downsides
-_
+```scala
+package shapeless
+
+object Generic {
+  type Aux[A, R] = Generic[A] { type Repr = R }
+}
+```
+
+### Compiler errors
+When things go wrong, the compiler messages can be quite useless. This usually happens when the compiler can't find an instance of `Generic` or when it can't derive a `CsvEncoder` instance for the corresponding `HList`.  This normally happens because one of the fields in our ADT does not have a `CsvEncoder` instance in scope.
 
 ## Deriving coproduct type class instances
 _
