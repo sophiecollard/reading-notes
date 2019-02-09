@@ -23,7 +23,7 @@ implicit val employeeCsvEncoder: CsvEncoder[Employee] = {
 }
 ```
 
-The commonly accepted idiomatic style for type class defini?ons includes a companion object containing some standard methods:
+The commonly accepted idiomatic style for type class definitions includes a companion object containing some standard methods:
 
 ```scala
 object CsvEncoder {
@@ -97,6 +97,69 @@ val reprCsvEncoder: CsvEncoder[String :: Int :: Boolean :: HNil] =
 reprCsvEncoder.encode("abc" :: 1 :: false :: HNil)
 // res0: List[String] = List(abc, 1, false)
 ```
+
+### Deriving type class instances for concrete products
+Combining our derivation rules for `HList` with a `Generic[IceCream]` instance, we can derive a `CsvEncoder[IceCream]` instance.
+
+```scala
+object IceCream {
+  import shapeless.Generic
+
+  implicit val csvEncoder: CsvEncoder[IceCream] = {
+    val generic = Generic[IceCream]
+    val genericCsvEncoder = CsvEncoder[generic.Repr]
+    CsvEncoder.instance { iceCream =>
+      genericCsvEncoder.encode(generic.to(iceCream))
+    }
+  }
+}
+```
+
+We can test our encoder as follows:
+
+```scala
+val iceCream = IceCream("Sundae", 1, false)
+val iceCreamCsvEncoder: CsvEncoder[IceCream] = implicitly[CsvEncoder[IceCream]]
+iceCreamCsvEncoder.encode(iceCream)
+```
+
+The example above is specific to our `IceCream` type. Ideally, we'd like to derive `CsvEncoder` instances for any type with a `Generic` instance and a matching `CsvEncoder` for that instance.
+
+This can be achieved with:
+
+```scala
+implicit def genericCsvEncoder[A, R](
+  implicit
+  gen: Generic[A] { type Repr = R }, // trick to solve scoping issue
+  csvEncoder: CsvEncoder[R]
+): CsvEncoder[A] = CsvEncoder.instance { a =>
+  csvEncoder.encode(gen.to(a))
+}
+```
+
+We can test this code in the repl:
+
+```scala
+import shapeless.{Generic, HList, HNil, ::}
+
+val iceCream = IceCream("Sundae", 1, false)
+implicit val genIceCream = Generic[IceCream]
+
+// check that we have the HList encoder correctly imported into our scope
+implicitly[CsvEncoder[String :: Int :: Boolean :: HNil]]
+// res0: typeclasses.CsvEncoder[String :: Int :: Boolean :: shapeless.HNil] = typeclasses.CsvEncoder$$anon$1@b57ca42
+
+val iceCreamCsvEncoder = implicitly[CsvEncoder[IceCream]]
+
+iceCreamCsvEncoder.encode(iceCream)
+// res1: List[String] = List(Sundae, 1, false)
+```
+
+### Aux type aliases
+_
+
+### Downsides
+_
 
 ## Deriving coproduct type class instances
 _
