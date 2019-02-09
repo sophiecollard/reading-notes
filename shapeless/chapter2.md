@@ -1,8 +1,8 @@
-# CHAPTER 2: ADTs and Generic Representations
+# CHAPTER 2: ADTs and generic representations
 [back to index](index.md)
 
-## Algebraic Data Types
-Algebraic Data Types let us represent data using _and_ and _or_. For instance, a shape can be a rectangle or a circle. A rectangle has a width and a height. A circle has a radius.
+## Algebraic data types
+Algebraic Data Types (ADTs) let us represent data using _and_ and _or_. For instance, a shape can be a rectangle or a circle. A rectangle has a width and a height. A circle has a radius.
 
 ```scala
 sealed trait Shape
@@ -24,12 +24,12 @@ While the first example is more readable, the second is more generic. Any code t
 
 Instead of `Tuple` and `Either`, Shapeless uses its own generic data types to represent generic products and coproducts.
 
-## Generic Product Encodings
+## Generic product encodings
 Shapeless uses a generic encoding for products called a heterogeneous list. An `HList` is either the empty list `HNil`, or a pair `::[H, T]` where `H` is an arbitrary type and `T` is another `HList`.
 
 The compiler knows the exact length of each `HList`, so it becomes a compilation error to take the head or tail of an empty list.
 
-## Generic Coproduct Encodings
+## Generic coproduct encodings
 In Shapeless coproducts take the form `A :+: B :+: C :+: CNil` meaning _“A or B or C”_, where `:+:` can be loosely interpreted as `Either`. `:+:` has two subtypes, `Inl` and `Inr`, that correspond loosely to `Left` and `Right`. We can’t instantiate `CNil` or build a coproduct purely from instances of `Inr`. We always have an `Inl` in a value.
 
 ```scala
@@ -45,7 +45,7 @@ val red: Light = Inl(Red(())
 val green: Light = Inl(Inr(Inl(Green())))
 ```
 
-## Generic Type Class
+## Generic type class
 Shapeless provides a type class called `Generic` that allows us to switch back and forth between a concrete ADT and its generic representation.
 
 ```scala
