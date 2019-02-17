@@ -6,7 +6,7 @@ Informally, functors are defined as data containers that implement a `map` metho
 
 Formally, a functor is a type `F[A]` with an operation `map` of type `(A => B) => F[B]`.
 
-A simplified implementation of Cats' `Functor` type is:
+A simplified implementation of Cats' `Functor` is:
 
 ```scala
 import scala.language.higherKinds

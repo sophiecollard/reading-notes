@@ -6,3 +6,4 @@ Publisher: Underscore
 [Chapter 1 - Introduction](chapter1.md)  
 [Chapter 2 - Monoids and Semigroups](chapter2.md)  
 [Chapter 3 - Functors](chapter3.md)  
+[Chapter 4 - Monads](chapter4.md)  
