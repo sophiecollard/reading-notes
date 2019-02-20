@@ -7,3 +7,4 @@ Publisher: Underscore
 [Chapter 2 - Monoids and Semigroups](chapter2.md)  
 [Chapter 3 - Functors](chapter3.md)  
 [Chapter 4 - Monads](chapter4.md)  
+[Chapter 5 - Monad Transformers](chapter5.md)  
