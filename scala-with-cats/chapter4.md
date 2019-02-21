@@ -6,7 +6,7 @@ A monad is a mechanism for sequencing computation. Monadic behaviour is captured
   * `pure` of type `A => F[A]`
   * `flatMap` of type `(F[A], A => F[B]) => F[B]`
 
-An simplified implementation of Cats' `Monad` is:
+A simplified implementation of Cats' `Monad` is:
 
 ```scala
 trait Monad[F[_]] {
