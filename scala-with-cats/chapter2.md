@@ -15,7 +15,7 @@ trait Monoid[A] {
 }
 ```
 
-There may be more than one sensible implementation of the `Monoid` type class for any given type. For example `Monoid[Int]` could use *addition* or *multiplication*. `Monoid[Boolean]` could use any of *AND*, *OR*, *XOR* and *XNOR* operators. `Monoid[Set[A]]` could use *union*, *intersection* or even *diff*.
+There may be more than one sensible implementation of the `Monoid` type class for any given type. For example `Monoid[Int]` could use *addition* or *multiplication* as its `combine` operation. `Monoid[Boolean]` could use any of *AND*, *OR*, *XOR* and *XNOR* operators. `Monoid[Set[A]]` could use *union*, *intersection* or even *diff*.
 
 ## Semigroups
 A semigroup only has an associative binary operation *combine*:
