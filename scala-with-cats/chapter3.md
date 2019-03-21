@@ -2,7 +2,7 @@
 [Back to index](index.md)
 
 ## Functors
-Informally, functors are defined as data containers that implement a `map` method. We can think of the `map` method as a way of sequencing computations on values inside this container, or context. Examples of functors include `List`, `Option` and `Future`.
+Informally, functors are defined as data containers that implement a `map` method. We can think of the `map` method as a way of sequencing computations on values inside this container. Examples of functors include `List`, `Option` and `Future`.
 
 Formally, a functor is a type `F[A]` with an operation `map` of type `(A => B) => F[B]`.
 
@@ -12,18 +12,18 @@ A simplified implementation of Cats' `Functor` is:
 import scala.language.higherKinds
 
 trait Functor[F[_]] {
-  def map[A,B](fa: F[A])(f: A => B): F[B]
+  def map[A, B](fa: F[A])(f: A => B): F[B]
 }
 ```
 
 ### Laws
-Functors must comply with *identity* and *compositional* laws. Concretely, the following must return true:
+Functors must comply with *identity* and *compositional* laws. Concretely, the following must evaluate to `true`:
 
 ```scala
-// Passing the identity function to map returns the functor contents unchanged
+// Passing the identity function to map returns the functor unchanged
 fa.map(identity) == fa
 // Mapping with two functions f and g is the same as mapping with f and then mapping with g
-fa.map(f).map(g) == fa.map(x => g(f(x)))
+fa.map(x => g(f(x))) == fa.map(f).map(g)
 ```
 
 ## Aside: Higher kinds and type constructors
@@ -46,24 +46,18 @@ scalacOptions += "-language:higherKinds"
 ```
 
 ### Type constructors
-*Type constructors* take at least one *type parameter*. For instance, `List` is a *type constructor* that takes one type parameter while `List[A]` is a *type* produced using a type parameter `A`.
+*Type constructors* take at least one *type parameter*. For instance, `List` is a type constructor that takes one type parameter while `List[A]` is a *type* produced by setting the type parameter of `List` to `A`.
 
 ## Contravariant and invariant functors
 
 ### Contravariant functors
-The *contravariant functor* provides a `contramap` operation that represents prepending an operation to a chain (as opposed to appending with a covariant functor). The type signature of `contramap` is:
-
-```scala
-trait F[A] {
-  def contramap(f: B => A): F[B]
-}
-```
+The *contravariant functor* provides a `contramap` operation that represents prepending an operation to a chain (as opposed to appending with a covariant functor).
 
 Cats defines the contravariant functor as:
 
 ```scala
 trait Contravariant[F[_]] {
-  def contramap[A,B](fa: F[A])(f: B => A): F[B]
+  def contramap[A, B](fa: F[A])(f: B => A): F[B]
 }
 ```
 
@@ -83,7 +77,7 @@ trait Printable[A] { self =>
 }
 ```
 
-A new `Printable` instance for some new type `Box` can be defined using `contramap`:
+A `Printable` instance for some new type `Box` can be defined using `contramap`:
 
 ```scala
 final case class Box[A](value: A)
@@ -96,19 +90,13 @@ object Box {
 ```
 
 ### Invariant functors
-Invariant functors implement an `imap` method. If `map` generates new type class instances by *appending* a function to a chain and `contramap` generates them by *prepending* an operation to a chain, `imap` generates them via a pair of *bidirectional transformations*. The type signature of `imap` is:
-
-```scala
-trait F[A] {
-  def imap[B](f: A => B, g: B => A): F[B]
-}
-```
+Invariant functors implement an `imap` method. If `map` generates new type class instances by *appending* a function to a chain and `contramap` generates them by *prepending* an operation to a chain, `imap` generates them via a pair of *bidirectional transformations*.
 
 Cats defines the invariant functor as:
 
 ```scala
 trait Invariant[F[_]] {
-  def imap[A,B](fa: F[A])(f: A => B)(g: B => A): F[B]
+  def imap[A, B](fa: F[A])(f: A => B)(g: B => A): F[B]
 }
 ```
 
@@ -130,14 +118,14 @@ trait Codec[A] { self =>
 }
 ```
 
-A new `Codec` instance can be defined for some type `Box` using `imap`:
+A `Codec` instance can be defined for some new type `Box` using `imap`:
 
 ```scala
 final case class Box[A](value: A)
 
 object Box {
   implicit def codec[A](implicit ev: Codec[A]): Codec[Box[A]] = {
-    ev.imap(Box.apply, _.value)
+    ev.imap(apply, _.value)
   }
 }
 ```
@@ -152,20 +140,19 @@ import cats.syntax.invariant._ // for imap
 implicit val symbolMonoid: Monoid[Symbol] = Monoid[String].imap(Symbol.apply)(_.name)
 ```
 
-### Covariance, contravariance and invariance summary
-If `F` is a *covariant* functor (eg: `Option`), whenever we have an `F[A]` and a function `A => B` we can always obtain an `F[B]`.
+### Summary
+*Covariant* functors represent the ability to apply functions to a value in some context. Successive calls to `map` apply these functions in sequence, each accepting the result of its
+predecessor as a parameter.
 
-If `F` is a *contravariant* functor (eg: `Printable`), whenever we have an `F[A]` and a function `B => A` we can always obtain an `F[B]`.
+If `F` is a covariant functor (eg: `Option`), whenever we have an `F[A]` and a function `A => B` we can obtain an `F[B]`.
 
-Finally, invariant functors (eg: `Codec`) capture cases where we can convert between `F[A]` and `F[B]` via `A => B` and `B => A` functions.
+*Contravariant* functors represent the ability to prepend functions to a function-like context. Successive calls to `contramap` sequence these functions in the opposite order to `map`.
+
+If `F` is a contravariant functor (eg: `Printable`), whenever we have an `F[A]` and a function `B => A` we can obtain an `F[B]`.
+
+*Invariant* functors represent bidirectional transformations.
+
+If `F` is an invariant functor (eg: `Codec`), we can convert between `F[A]` and `F[B]` via `A => B` and `B => A` functions.
 
 ## Aside: Partial unification
 See pages 70-74.
-
-## Summary
-*Covariant functors* represent the ability to apply functions to a value in some context. Successive calls to `map` apply these functions in sequence, each accepting the result of its
-predecessor as a parameter.
-
-*Contravariant functors* represent the ability to prepend functions to a function-like context. Successive calls to `contramap` sequence these functions in the opposite order to `map`.
-
-*Invariant functors* represent bidirectional transformations.
