@@ -9,6 +9,7 @@ Publisher: Underscore
 [Chapter 4 - Monads](chapter4.md)  
 [Chapter 5 - Monad Transformers](chapter5.md)  
 [Chapter 6 - Semigroupal and Applicative](chapter6.md)  
+[Chapter 7 - Foldable and Traverse](chapter7.md)  
 
 ## Code
 Code for some of the examples and exercises in this book are kept in this [repository](https://github.com/sophiecollard/scala-with-cats).
