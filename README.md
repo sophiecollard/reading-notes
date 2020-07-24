@@ -1,8 +1,6 @@
 # Reading Notes
 A compilation of notes I've taken while reading interesting books.
 
-See my [2020 study goals](2020.md).  
-
 ## Currently Reading
 [The Rust Programming Language](rust-lang/index.md)  
 
