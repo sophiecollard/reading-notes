@@ -48,4 +48,4 @@ Consistent prefix reads guarantees that ordering will be preserved between a seq
 This can be implemented by ensuring that causally related data is read from the same partition.
 
 ## Multi-Leader Replication
-An alternative way to handle replicate data is multi-leader replication, in which multiple leaders may coexist, each simultaneously acting as a follower to the other leaders. While rarely used within a single data centre, multi-leader replication tends to be well-suited to systems in which data must be distributed across multiple data centres.
+An alternative way to handle replicate data is multi-leader replication, in which multiple leaders may coexist, each simultaneously acting as a follower to the other leaders. While rarely used within a single data centre, multi-leader replication tends to be well-suited to systems in which data must be distributed across multiple data centres, clients with offline operation (eg: calendar app), and collaborative editing (eg: Google Docs).
